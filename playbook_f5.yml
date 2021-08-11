@@ -1,0 +1,45 @@
+---
+- name: Create F5 credential type
+  hosts: localhost
+  connection: local
+  gather_facts: no
+
+  collections:
+    - ansible.tower
+
+  vars:
+    tower_hostname: "{{ lookup('env','TOWER_HOST') }}"
+    tower_username: "{{ lookup('env','TOWER_USERNAME') }}"
+    tower_password: "{{ lookup('env','TOWER_PASSWORD') }}"
+    tower_validate_certs: "{{ lookup('env','TOWER_VERIFY_SSL') }}"
+    tower_credential_types:
+      - name: F5
+        inputs:
+          fields:
+            - id: server
+              type: string
+              label: Server
+            - id: username
+              type: string
+              label: Username
+            - id: password
+              type: string
+              label: Password
+              secret: true
+            - id: validate_certs
+              type: boolean
+              label: Verify SSL
+          required:
+            - server
+            - username
+            - password
+        injectors:
+          env:
+            F5_SERVER: "{% raw %}{  { server }}{% endraw %}"
+            F5_USER: "{% raw %}{  { username }}{% endraw %}"
+            F5_PASSWORD: "{% raw %}{  { password }}{% endraw %}"
+            F5_VALIDATE_CERTS: "{% raw %}{  { validate_certs }}{% endraw %}"
+
+  tasks:
+    - ansible.builtin.include_role:
+        name: redhat_cop.tower_configuration.credential_types

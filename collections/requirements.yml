@@ -1,0 +1,6 @@
+---
+collections:
+  - name: ansible.tower
+    version: 3.8.3
+  - name: redhat_cop.tower_configuration
+    version: 1.5.0

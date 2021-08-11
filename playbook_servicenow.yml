@@ -1,0 +1,41 @@
+---
+- name: Create ServiceNow credential type
+  hosts: localhost
+  connection: local
+  gather_facts: no
+
+  collections:
+    - ansible.tower
+
+  vars:
+    tower_hostname: "{{ lookup('env','TOWER_HOST') }}"
+    tower_username: "{{ lookup('env','TOWER_USERNAME') }}"
+    tower_password: "{{ lookup('env','TOWER_PASSWORD') }}"
+    tower_validate_certs: "{{ lookup('env','TOWER_VERIFY_SSL') }}"
+    tower_credential_types:
+      - name: ServiceNow
+        inputs:
+          fields:
+            - id: host
+              type: string
+              label: Host
+            - id: username
+              type: string
+              label: Username
+            - id: password
+              type: string
+              label: Password
+              secret: true
+          required:
+            - host
+            - username
+            - password
+        injectors:
+          env:
+            SN_HOST: "{% raw %}{  { host }}{% endraw %}"
+            SN_USERNAME: "{% raw %}{  { username }}{% endraw %}"
+            SN_PASSWORD: "{% raw %}{  { password }}{% endraw %}"
+
+  tasks:
+    - ansible.builtin.include_role:
+        name: redhat_cop.tower_configuration.credential_types
