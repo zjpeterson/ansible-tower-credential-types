@@ -15,7 +15,7 @@ Set Tower information via environment variables `TOWER_HOST`, `TOWER_USERNAME`, 
 ```
 export TOWER_HOST=my-tower-host
 export TOWER_USERNAME=admin
-export TOWER_password=password
+export TOWER_PASSWORD=password
 export TOWER_VERIFY_SSL=no
 ```
 
